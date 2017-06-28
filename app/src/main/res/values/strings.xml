@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Signage</string>
+
+    <!--Login Activity-->
+    <string name="login_form_title">Log In</string>
+    <string name="login_button_form">Log In</string>
+    <string name="login_username_hint">Username</string>
+    <string name="login_password_hint">Password</string>
+</resources>

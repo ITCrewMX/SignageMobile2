@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "267436537370",
+    "firebase_url": "https://signagemobile2.firebaseio.com",
+    "project_id": "signagemobile2",
+    "storage_bucket": "signagemobile2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:267436537370:android:1114ab2ad0ca7f86",
+        "android_client_info": {
+          "package_name": "signage.itcrew.com.signagemobile2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "267436537370-4loou50lh4kpqfc929g724nfnq497ot0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "signage.itcrew.com.signagemobile2",
+            "certificate_hash": "57b7f9b69eafbf262d085c42b02d53988849c5e1"
+          }
+        },
+        {
+          "client_id": "267436537370-agg43bqofe2hu9np1d2e117qaqqrj38b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSe-8ht_nX3Fe_9vagbZhNrR6_5ZB6XH4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "267436537370-agg43bqofe2hu9np1d2e117qaqqrj38b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
