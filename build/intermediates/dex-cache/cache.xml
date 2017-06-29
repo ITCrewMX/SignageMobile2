@@ -3,21 +3,84 @@
 
     <item
         is-multidex="true"
-        jar="D:\Users\hmgc_\Documents\SignageMobile2\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jar="/Users/biller/.android/build-cache/78fe2233e240a54c1f13f7fea7c8ba87b1671437/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="21160c044ba984fb2e33b833c89a496becb85cfd">
+        <dex dex="/Users/biller/Documents/GitHub/SignageMobile2/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_c47c49fed648f5c064480c53e45a3080ddbcfcdb/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/biller/.android/build-cache/d1531593625ecf7bb7541b5f0d43f90f06bab9c1/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="5bd38c72db0a3b4140d38b7fb527e78e46126d79">
+        <dex dex="/Users/biller/Documents/GitHub/SignageMobile2/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_27a2a349dab8be805580168c7e7d412411ac346d/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/biller/.android/build-cache/e7a45268f2ab9603720e4a1f56466fa5989bb4e3/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="e00b71dcf2fbecaf59b0d487d11839522dd7863d">
+        <dex dex="/Users/biller/Documents/GitHub/SignageMobile2/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_9b7e35c86a4c4e580fe9ade890d795efadf158f1/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/biller/.android/build-cache/e2f4881c0d3361e101edc6e0932345d1ed59c899/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="32054268e6c9fdff0c9c5deafafd0bd105120fb6">
+        <dex dex="/Users/biller/Documents/GitHub/SignageMobile2/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_bc15d9a00cf77310f10be2ebcd17db2d28bffd2c/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/biller/.android/build-cache/dfd852fae6211d435e83f7f3e1a9b5a82eec9025/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="6178e31397c24ab1bfc09766832cdcf519621eb7">
+        <dex dex="/Users/biller/Documents/GitHub/SignageMobile2/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_6720bbd7ae064210849e8fc752cb417754f193bd/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/biller/.android/build-cache/9dc0f56f15d04741fcc9867b82da6e63d93b22e9/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="54511008bf7d1aabd871d8d3a26781b3f2bd9617">
+        <dex dex="/Users/biller/Documents/GitHub/SignageMobile2/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_0b86a42d0dc994684446bf43ee9983856fe2c343/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/biller/Documents/GitHub/SignageMobile2/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
         jumboMode="true"
         optimize="true"
         revision="26.0.0"
         sha1="3be78ebc2706b2e1fe2f12d5726887a92d6c183b">
-        <dex dex="D:\Users\hmgc_\Documents\SignageMobile2\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run_655ef6a297d3a43a12d63a477c9e55b2965149da\classes.dex" />
+        <dex dex="/Users/biller/Documents/GitHub/SignageMobile2/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_7a3b704c06902925507e25c06e6ff346363ee375/classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="D:\Users\hmgc_\Documents\SignageMobile2\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jar="/Users/biller/.android/build-cache/9a6bdbcf2f54d3e4a8d4a42062cac20d15559cfa/output/jars/classes.jar"
         jumboMode="true"
         optimize="true"
         revision="26.0.0"
-        sha1="ebaeba8866782d3cb367036c28afe9b95763fa31">
-        <dex dex="D:\Users\hmgc_\Documents\SignageMobile2\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_c3c7398cba8fd4a12292ff57b353a9884ace7a1e\classes.dex" />
+        sha1="d4acacbab67243d9eb026ea759aefd401d070f3e">
+        <dex dex="/Users/biller/Documents/GitHub/SignageMobile2/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_3ccd7e5aab3753d063a9b06f0a79f5b80290e865/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/biller/Documents/GitHub/SignageMobile2/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="57228e63c96dda910d3ac76bba624a35d527f42f">
+        <dex dex="/Users/biller/Documents/GitHub/SignageMobile2/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_cccd4714591c04b118b76921c6b659a7374c5858/classes.dex" />
     </item>
 
 </items>

@@ -77,6 +77,7 @@ public class Campaign extends AppCompatActivity {
             public void onPrepared(MediaPlayer mp) {
                 pDialog.dismiss();
                 videoView.start();
+                mp.setLooping(true);
             }
         });
     }
@@ -220,6 +221,7 @@ public class Campaign extends AppCompatActivity {
                                 public void onPrepared(MediaPlayer mp) {
                                     pDialog.dismiss();
                                     videoView.start();
+                                    mp.setLooping(true);
                                 }
                             });
                         }
