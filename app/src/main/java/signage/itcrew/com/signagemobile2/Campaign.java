@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
@@ -27,8 +29,15 @@ public class Campaign extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         setContentView(R.layout.activity_campaign);
+
+    //adding weather fragment and replacing the current layout
+        /*WeatherFragment weather_fragment = new WeatherFragment();
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction()
+                .replace(R.id.weather_layout, weather_fragment, weather_fragment.getTag())
+                .commit();*/
 
         // Create a progressbar
         pDialog = new ProgressDialog(Campaign.this);
