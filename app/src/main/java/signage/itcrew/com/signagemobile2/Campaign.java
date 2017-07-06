@@ -1,16 +1,26 @@
 package signage.itcrew.com.signagemobile2;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 /*
 * 1 imagen
@@ -23,21 +33,46 @@ public class Campaign extends AppCompatActivity {
     ProgressDialog pDialog;
     VideoView videoView;
     TextView banner;
+    private double latitude, longitude;
     private String jsonResponse, jsonmessage;
+    private static final int MY_PERMISSION_REQUEST_LOCATION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         //getSupportActionBar().hide();
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        View decorView = getWindow().getDecorView();
+        // Hide both the navigation bar and the status bar.
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
         setContentView(R.layout.activity_campaign);
 
-    //adding weather fragment and replacing the current layout
-        /*WeatherFragment weather_fragment = new WeatherFragment();
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction()
-                .replace(R.id.weather_layout, weather_fragment, weather_fragment.getTag())
-                .commit();*/
+
+    //getting location
+        if(ContextCompat.checkSelfPermission(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION)){
+                ActivityCompat.requestPermissions(Campaign.this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSION_REQUEST_LOCATION);
+            }
+            else{
+                LocationManager locationManager = (LocationManager) Campaign.this.getSystemService(Campaign.this.LOCATION_SERVICE);
+                Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                try{
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    Toast.makeText(Campaign.this, "Location not Found", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+
+        //saving location in shared preferences
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LATITUDE", "19.4364791").apply();
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LONGITUDE", "-99.1916389").apply();
 
         // Create a progressbar
         pDialog = new ProgressDialog(Campaign.this);
@@ -90,6 +125,30 @@ public class Campaign extends AppCompatActivity {
                 mp.setLooping(true);
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+        switch(requestCode){
+            case MY_PERMISSION_REQUEST_LOCATION:{
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    if(ContextCompat.checkSelfPermission(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        try{
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            Log.d("Success", "saved location successfully");
+                        }catch(Exception e){
+                            e.printStackTrace();
+                            Toast.makeText(Campaign.this, "Not Found", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                Toast.makeText(Campaign.this, "No permission granted", Toast.LENGTH_SHORT).show();
+
+            }
+        }
     }
 }
 /*

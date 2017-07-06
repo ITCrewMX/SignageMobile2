@@ -1,8 +1,14 @@
 package signage.itcrew.com.signagemobile2;
 
+import android.*;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
@@ -45,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText stoken;
     private ProgressDialog pDialog;
     private String jsonResponse, jsonmessage, jsonUser;
+    private static final int MY_PERMISSION_REQUEST_LOCATION = 1;
 
     private static String TAG = LoginActivity.class.getSimpleName();
 
@@ -204,8 +211,4 @@ public class LoginActivity extends AppCompatActivity {
         }
         return password;
     }
-
-
-
-
 }
