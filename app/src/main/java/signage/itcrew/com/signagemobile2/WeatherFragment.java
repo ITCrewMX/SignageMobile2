@@ -62,7 +62,7 @@ public class WeatherFragment extends Fragment {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         latitude = prefs.getString("LATITUDE", "19.4372531");
-        longitude = prefs.getString("LONGITUDE", "-99.1457678");
+        longitude = prefs.getString("LONGITUDE", "99.1457678");
         asyncTask.execute(latitude,longitude); //  asyncTask.execute("Latitude", "Longitude")
 
         return view;

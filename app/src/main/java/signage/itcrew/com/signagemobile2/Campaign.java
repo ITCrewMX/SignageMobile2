@@ -2,8 +2,10 @@ package signage.itcrew.com.signagemobile2;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -13,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -51,8 +54,72 @@ public class Campaign extends AppCompatActivity {
         setContentView(R.layout.activity_campaign);
 
 
-    //getting location
-        if(ContextCompat.checkSelfPermission(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        //getting location
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission. ACCESS_COARSE_LOCATION)) {
+
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Location")
+                        .setMessage("This application needs permission to use your location")
+                        .setPositiveButton("OK ", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(Campaign.this,
+                                        new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                                        MY_PERMISSION_REQUEST_LOCATION);
+                            }
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission. ACCESS_COARSE_LOCATION}, MY_PERMISSION_REQUEST_LOCATION);
+                locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                latitude =  location.getLatitude();
+                longitude = location.getLongitude();
+            }
+        }else {
+            locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            latitude =  location.getLatitude();
+            longitude = location.getLongitude();
+
+            //Log.w("error", "no hay error");
+        }
+        /*if(ContextCompat.checkSelfPermission(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION)){
                 ActivityCompat.requestPermissions(Campaign.this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSION_REQUEST_LOCATION);
             }
@@ -67,12 +134,11 @@ public class Campaign extends AppCompatActivity {
                     Toast.makeText(Campaign.this, "Location not Found", Toast.LENGTH_SHORT).show();
                 }
             }
-        }
-
+        }*/
 
         //saving location in shared preferences
-        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LATITUDE", "19.4364791").apply();
-        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LONGITUDE", "-99.1916389").apply();
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LATITUDE", String.valueOf(latitude)).apply();
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LONGITUDE", String.valueOf(longitude)).apply();
 
         // Create a progressbar
         pDialog = new ProgressDialog(Campaign.this);
@@ -127,27 +193,37 @@ public class Campaign extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
-        switch(requestCode){
-            case MY_PERMISSION_REQUEST_LOCATION:{
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    if(ContextCompat.checkSelfPermission(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-                        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        try{
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                            Log.d("Success", "saved location successfully");
-                        }catch(Exception e){
-                            e.printStackTrace();
-                            Toast.makeText(Campaign.this, "Not Found", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-                Toast.makeText(Campaign.this, "No permission granted", Toast.LENGTH_SHORT).show();
 
+    //request permission for location
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+
+        switch (requestCode) {
+            case MY_PERMISSION_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            android.Manifest.permission. ACCESS_COARSE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        //Request location updates:
+                        //locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return;
             }
+
         }
     }
 }
