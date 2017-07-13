@@ -1,5 +1,7 @@
 package signage.itcrew.com.signagemobile2;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,6 +43,8 @@ public class Campaign extends AppCompatActivity {
     private double latitude, longitude;
     private String jsonResponse, jsonmessage;
     private static final int MY_PERMISSION_REQUEST_LOCATION = 1;
+    private int mShortAnimationDuration, mLongAnimationDuration;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +60,14 @@ public class Campaign extends AppCompatActivity {
         setContentView(R.layout.activity_campaign);
 
         imageView = (ImageView) findViewById(R.id.imageView);
+        mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+        mLongAnimationDuration = getResources().getInteger(
+                android.R.integer.config_longAnimTime);
 
 
         //getting location
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        /*LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -119,7 +127,7 @@ public class Campaign extends AppCompatActivity {
 
             //Log.w("error", "no hay error");
         }
-        /*if(ContextCompat.checkSelfPermission(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        if(ContextCompat.checkSelfPermission(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION)){
                 ActivityCompat.requestPermissions(Campaign.this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSION_REQUEST_LOCATION);
             }
@@ -134,11 +142,11 @@ public class Campaign extends AppCompatActivity {
                     Toast.makeText(Campaign.this, "Location not Found", Toast.LENGTH_SHORT).show();
                 }
             }
-        }*/
+        }
 
         //saving location in shared preferences
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LATITUDE", String.valueOf(latitude)).apply();
-        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LONGITUDE", String.valueOf(longitude)).apply();
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LONGITUDE", String.valueOf(longitude)).apply();*/
 
         // Create a progressbar
         pDialog = new ProgressDialog(Campaign.this);
@@ -197,8 +205,25 @@ public class Campaign extends AppCompatActivity {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 videoView.setVisibility(View.INVISIBLE);
-                imageView.setVisibility(View.VISIBLE);
+                //imageView.setVisibility(View.VISIBLE);
                 imageView.setImageResource(R.drawable.bg1);
+                imageView.setAlpha(0f);
+                imageView.setVisibility(View.VISIBLE);
+
+                videoView.animate()
+                        .alpha(0f)
+                        .setDuration(mLongAnimationDuration)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                videoView.setVisibility(View.GONE);
+                            }
+                        });
+
+                imageView.animate()
+                        .alpha(1f)
+                        .setDuration(mLongAnimationDuration)
+                        .setListener(null);
             }
         });
     }
