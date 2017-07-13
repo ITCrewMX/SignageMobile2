@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +35,8 @@ import android.widget.VideoView;
 
 public class Campaign extends AppCompatActivity {
     ProgressDialog pDialog;
-    VideoView videoView;
+    VideoView videoView, videoView2;
+    ImageView imageView, imageView2;
     TextView banner;
     private double latitude, longitude;
     private String jsonResponse, jsonmessage;
@@ -149,6 +151,13 @@ public class Campaign extends AppCompatActivity {
         pDialog.show();
 
         videoView = (VideoView) findViewById(R.id.videoView);
+        videoView2 = (VideoView) findViewById(R.id.videoView2);
+        videoView2.setVisibility(View.GONE);
+        imageView = (ImageView) findViewById(R.id.imageView);
+        imageView.setVisibility(View.GONE);
+        imageView2 = (ImageView) findViewById(R.id.imageView2);
+        imageView2.setVisibility(View.GONE);
+
         banner = (TextView)findViewById(R.id.textView);
         banner.setText("Bienvenido a Signage Mobile, una nueva forma de contacto empresarial");
         banner.setSelected(true);
@@ -161,6 +170,11 @@ public class Campaign extends AppCompatActivity {
 
         String url ="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4";
         Uri vidUri = Uri.parse(url);
+
+        String url2 = "http://www.valuewalk.com/wp-content/uploads/2017/05/iPhone-8-renders-Benjamin-geskin.jpg";
+        Uri imgUri = Uri.parse(url2);
+
+        imageView.setImageURI(imgUri);
 
         videoView.setVideoURI(vidUri);
 
@@ -188,7 +202,14 @@ public class Campaign extends AppCompatActivity {
             public void onPrepared(MediaPlayer mp) {
                 pDialog.dismiss();
                 videoView.start();
-                mp.setLooping(true);
+                //mp.setLooping(true);
+            }
+        });
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                videoView.setVisibility(View.GONE);
+                imageView.setVisibility(View.VISIBLE);
             }
         });
     }
