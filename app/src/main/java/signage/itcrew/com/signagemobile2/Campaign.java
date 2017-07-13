@@ -67,7 +67,7 @@ public class Campaign extends AppCompatActivity {
 
 
         //getting location
-        /*LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -127,7 +127,7 @@ public class Campaign extends AppCompatActivity {
 
             //Log.w("error", "no hay error");
         }
-        if(ContextCompat.checkSelfPermission(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        /*if(ContextCompat.checkSelfPermission(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION)){
                 ActivityCompat.requestPermissions(Campaign.this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSION_REQUEST_LOCATION);
             }
@@ -142,11 +142,11 @@ public class Campaign extends AppCompatActivity {
                     Toast.makeText(Campaign.this, "Location not Found", Toast.LENGTH_SHORT).show();
                 }
             }
-        }
+        }*/
 
         //saving location in shared preferences
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LATITUDE", String.valueOf(latitude)).apply();
-        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LONGITUDE", String.valueOf(longitude)).apply();*/
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LONGITUDE", String.valueOf(longitude)).apply();
 
         // Create a progressbar
         pDialog = new ProgressDialog(Campaign.this);
