@@ -35,8 +35,8 @@ import android.widget.VideoView;
 
 public class Campaign extends AppCompatActivity {
     ProgressDialog pDialog;
-    VideoView videoView, videoView2;
-    ImageView imageView, imageView2;
+    VideoView videoView;
+    ImageView imageView;
     TextView banner;
     private double latitude, longitude;
     private String jsonResponse, jsonmessage;
@@ -54,6 +54,8 @@ public class Campaign extends AppCompatActivity {
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
         setContentView(R.layout.activity_campaign);
+
+        imageView = (ImageView) findViewById(R.id.imageView);
 
 
         //getting location
@@ -108,10 +110,6 @@ public class Campaign extends AppCompatActivity {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this,
                         new String[]{android.Manifest.permission. ACCESS_COARSE_LOCATION}, MY_PERMISSION_REQUEST_LOCATION);
-                locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-                Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                latitude =  location.getLatitude();
-                longitude = location.getLongitude();
             }
         }else {
             locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 0, 0, locationListener);
@@ -151,13 +149,6 @@ public class Campaign extends AppCompatActivity {
         pDialog.show();
 
         videoView = (VideoView) findViewById(R.id.videoView);
-        videoView2 = (VideoView) findViewById(R.id.videoView2);
-        videoView2.setVisibility(View.GONE);
-        imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setVisibility(View.GONE);
-        imageView2 = (ImageView) findViewById(R.id.imageView2);
-        imageView2.setVisibility(View.GONE);
-
         banner = (TextView)findViewById(R.id.textView);
         banner.setText("Bienvenido a Signage Mobile, una nueva forma de contacto empresarial");
         banner.setSelected(true);
@@ -170,11 +161,6 @@ public class Campaign extends AppCompatActivity {
 
         String url ="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4";
         Uri vidUri = Uri.parse(url);
-
-        String url2 = "http://www.valuewalk.com/wp-content/uploads/2017/05/iPhone-8-renders-Benjamin-geskin.jpg";
-        Uri imgUri = Uri.parse(url2);
-
-        imageView.setImageURI(imgUri);
 
         videoView.setVideoURI(vidUri);
 
@@ -201,15 +187,18 @@ public class Campaign extends AppCompatActivity {
             // Close the progress bar and play the video
             public void onPrepared(MediaPlayer mp) {
                 pDialog.dismiss();
+                imageView.setVisibility(View.INVISIBLE);
                 videoView.start();
-                //mp.setLooping(true);
+                mp.setLooping(false);
             }
         });
+
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                videoView.setVisibility(View.GONE);
+            public void onCompletion(MediaPlayer mp) {
+                videoView.setVisibility(View.INVISIBLE);
                 imageView.setVisibility(View.VISIBLE);
+                imageView.setImageResource(R.drawable.bg1);
             }
         });
     }

@@ -17,32 +17,12 @@
         android:layout_alignParentBottom="true"
         android:layout_height="fill_parent" />
 
-    <VideoView
-        android:id="@+id/videoView2"
-        android:layout_width="fill_parent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:layout_height="fill_parent" />
-
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="fill_parent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:layout_height="fill_parent" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="fill_parent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:layout_height="fill_parent" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/bg1" />
 
     <TextView
         android:id="@+id/textView"
