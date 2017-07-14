@@ -6,13 +6,19 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -28,6 +34,8 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import java.io.File;
 /*
 * 1 imagen
 * 2 no se
@@ -46,6 +54,7 @@ public class Campaign extends AppCompatActivity {
     private int mShortAnimationDuration, mLongAnimationDuration;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +68,7 @@ public class Campaign extends AppCompatActivity {
         decorView.setSystemUiVisibility(uiOptions);
         setContentView(R.layout.activity_campaign);
 
-        imageView = (ImageView) findViewById(R.id.imageView);
+
         mShortAnimationDuration = getResources().getInteger(
                 android.R.integer.config_shortAnimTime);
         mLongAnimationDuration = getResources().getInteger(
@@ -173,59 +182,74 @@ public class Campaign extends AppCompatActivity {
         videoView.setVideoURI(vidUri);
 
         videoView.start();
-
-        try {
-            // Start the MediaController
-            MediaController mediacontroller = new MediaController(
-                    Campaign.this);
-            mediacontroller.setAnchorView(videoView);
-            // Get the URL from String VideoURL
-            Uri video = Uri.parse(url);
-            videoView.setMediaController(mediacontroller);
-            videoView.setVideoURI(video);
+        int number_of_items = 0;
+        File sdcard  = Environment.getRootDirectory();
 
 
-        } catch (Exception e) {
-            Log.e("Error", e.getMessage());
-            e.printStackTrace();
-        }
+        for(int i = 0; i < number_of_items; i++){
 
-        videoView.requestFocus();
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            // Close the progress bar and play the video
-            public void onPrepared(MediaPlayer mp) {
-                pDialog.dismiss();
-                imageView.setVisibility(View.INVISIBLE);
-                videoView.start();
-                mp.setLooping(false);
-            }
-        });
+            //obtener archivo de memoria interna
+            try {
 
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
+                File file = new File(sdcard, String.valueOf(i) + ".mp4");
+
+                // Start the MediaController
+                MediaController mediacontroller = new MediaController(
+                        Campaign.this);
+                mediacontroller.setAnchorView(videoView);
+                // Get the URL from String VideoURL
+                Uri video = Uri.parse(url);
+                videoView.setMediaController(mediacontroller);
+                videoView.setVideoPath(video.toString());
+
+                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        imageView.setVisibility(View.INVISIBLE);
+
+                        videoView.animate()
+                                .alpha(0f)
+                                .setDuration(mLongAnimationDuration)
+                                .setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        videoView.setVisibility(View.GONE);
+                                    }
+                                });
+
+                        imageView.animate()
+                                .alpha(1f)
+                                .setDuration(mLongAnimationDuration)
+                                .setListener(null);
+                    }
+
+                });
+                videoView.requestFocus();
+                videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    // Close the progress bar and play the video
+                    public void onPrepared(MediaPlayer mp) {
+                        pDialog.dismiss();
+                        imageView.setVisibility(View.INVISIBLE);
+                        videoView.start();
+                        mp.setLooping(false);
+                    }
+                });
+            } catch (Exception e) {
+
+                File file = new File(sdcard, String.valueOf(i) + ".jpg");
+
+                Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+                //Hide videoview
                 videoView.setVisibility(View.INVISIBLE);
-                //imageView.setVisibility(View.VISIBLE);
-                imageView.setImageResource(R.drawable.bg1);
+
+                imageView = (ImageView) findViewById(R.id.imageView);
+
+                imageView.setImageBitmap(myBitmap); //assign image to imageview
                 imageView.setAlpha(0f);
                 imageView.setVisibility(View.VISIBLE);
-
-                videoView.animate()
-                        .alpha(0f)
-                        .setDuration(mLongAnimationDuration)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                videoView.setVisibility(View.GONE);
-                            }
-                        });
-
-                imageView.animate()
-                        .alpha(1f)
-                        .setDuration(mLongAnimationDuration)
-                        .setListener(null);
             }
-        });
+        }
     }
 
 
