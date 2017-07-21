@@ -1,7 +1,9 @@
 package signage.itcrew.com.signagemobile2;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.util.Base64;
+import android.util.Xml;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -10,17 +12,20 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Downloader {
 
-    private String jsonResponse, jsonMedia, jsonMediaType;
-    private final String url;
+    private String jsonResponse, jsonMedia, jsonMediaType, full_path;
+    private String url;
     private FileOutputStream fos;
 
     public void Downloader (final Context context)
@@ -30,7 +35,7 @@ public class Downloader {
         updateCamapign(context);
     }
 
-    public void updateCamapign(Context context){
+    public void updateCamapign(final Context context){
 
         //Build Parameter with JSON body
         JSONObject content = new JSONObject();
@@ -52,6 +57,9 @@ public class Downloader {
         final JsonObjectRequest jsonrequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                String file_name = null;
+                String file_type = null;
+                String file_path = null;
                 try
                 {
                     //Get response status
@@ -112,8 +120,54 @@ public class Downloader {
                         //If media type is text
                         else if(jsonMediaType.compareTo("3") == 0)
                         {
-
+                            String banner = null;
+                            //Add text to shared preferences with "BANNER" tag
+                            PreferenceManager.getDefaultSharedPreferences(context).edit().putString("BANNER", banner).apply();
                         }
+
+                        final String xmlFile = "userData";
+
+                        try {
+                            FileOutputStream fos = new  FileOutputStream("campaign_data.xml");
+                            FileOutputStream fileos= context.openFileOutput(xmlFile, Context.MODE_PRIVATE);
+                            XmlSerializer xmlSerializer = Xml.newSerializer();
+                            StringWriter writer = new StringWriter();
+                            xmlSerializer.setOutput(writer);
+                            xmlSerializer.startDocument("UTF-8", true);
+                            xmlSerializer.startTag(null, "campaign_data");
+                            xmlSerializer.startTag(null, "file_name");
+                            xmlSerializer.text(file_name);
+                            xmlSerializer.endTag(null, "file_name");
+                            xmlSerializer.startTag(null,"file_type");
+                            xmlSerializer.text(file_type);
+                            xmlSerializer.endTag(null, "file_type");
+                            xmlSerializer.startTag(null,"file_path");
+                            xmlSerializer.text(file_path);
+                            xmlSerializer.endTag(null, "file_path");
+                            xmlSerializer.endTag(null, "campaign_data");
+                            xmlSerializer.endDocument();
+                            xmlSerializer.flush();
+                            String dataWrite = writer.toString();
+                            fileos.write(dataWrite.getBytes());
+                            fileos.close();
+                        }
+                        catch (FileNotFoundException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        catch (IllegalArgumentException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        catch (IllegalStateException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
                     }
                 }
                 catch (Exception e)
