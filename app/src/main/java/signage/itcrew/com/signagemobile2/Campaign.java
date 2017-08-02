@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -182,7 +183,9 @@ public class Campaign extends AppCompatActivity {
         videoView.setVideoURI(vidUri);
 
         videoView.start();
-        int number_of_items = 0;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        int number_of_items = Integer.parseInt(prefs.getString("PLAYSIZE", "0"));
         File sdcard  = Environment.getRootDirectory();
 
 
