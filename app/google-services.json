@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "267436537370-esnd7qls3nibeud1kafq0ick898rreqg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "signage.itcrew.com.signagemobile2",
+            "certificate_hash": "399eb1725feeaaf521ccf1b97266628ccf9a35bc"
+          }
+        },
+        {
           "client_id": "267436537370-4loou50lh4kpqfc929g724nfnq497ot0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

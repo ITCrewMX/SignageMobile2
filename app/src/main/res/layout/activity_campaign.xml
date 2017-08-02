@@ -6,7 +6,7 @@
     android:layout_height="fill_parent"
     android:gravity="center"
     android:background="@color/colorPrimaryDark"
-    tools:context="com.itcrew.signage.Campaign">
+    tools:context=".Campaign">
 
     <VideoView
         android:id="@+id/videoView"
@@ -21,14 +21,14 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
+        android:visibility="invisible"
         app:srcCompat="@drawable/bg1" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#D0D0D0"
+        android:background="#99000000"
         android:textColor="@android:color/white"
         android:textSize="40sp"
         android:focusable="true"
@@ -37,4 +37,13 @@
         android:scrollHorizontally="true"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"/>
+    <fragment
+        android:name="signage.itcrew.com.signagemobile2.WeatherFragment"
+        android:id="@+id/weather_layout"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/textView"
+        tools:layout="@layout/fragment_weather"/>
 </RelativeLayout>

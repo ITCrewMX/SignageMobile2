@@ -1,8 +1,14 @@
 package signage.itcrew.com.signagemobile2;
 
+import android.*;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
@@ -42,9 +48,10 @@ import com.loopj.android.http.*;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText user, password;
+    private EditText stoken;
     private ProgressDialog pDialog;
     private String jsonResponse, jsonmessage, jsonUser;
+    private static final int MY_PERMISSION_REQUEST_LOCATION = 1;
 
     private static String TAG = LoginActivity.class.getSimpleName();
 
@@ -55,9 +62,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         //Get values from textfields
-        user = (EditText) findViewById(R.id.username);
-        password = (EditText) findViewById(R.id.password);
-        password.setTransformationMethod(new PasswordTransformationMethod());
+        stoken = (EditText) findViewById(R.id.stoken);
+        //password = (EditText) findViewById(R.id.password);
+        //password.setTransformationMethod(new PasswordTransformationMethod());
+
 
         //Stablish a loading message
         pDialog = new ProgressDialog(this);
@@ -79,16 +87,16 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        user.getText().clear();
-        password.getText().clear();
+        stoken.getText().clear();
+
     }
 
     private void makeJSONObjectRequest(){
         showpDialog();
 
         //Establish url
-        //String url = "http://192.168.1.117:8080/Signage2.2/SignageResources/SignageRest/initSession";
-        String url = "http://10.0.2.2:8084/Signage2/SignageResources/SignageRest/initSession";
+        String url = "http://192.168.1.117:8080/Signage2.2/SignageResources/SignageRest/initSession";
+        //String url = "http://10.0.2.2:8084/Signage2/SignageResources/SignageRest/initSession";
 
 
         JSONObject content = new JSONObject();
@@ -96,16 +104,17 @@ public class LoginActivity extends AppCompatActivity {
         //Build Parameter
         try {
 
-            String encodedPwd = encodeMD5(password.getText().toString());
+            //String encodedPwd = encodeMD5(password.getText().toString());
             //byte[] encodeValue = Base64.encode(password.getText().toString().getBytes(), Base64.NO_WRAP);
-
-            content.put("usuario", user.getText().toString());
-            content.put("password", encodedPwd);
+            String pushtoken = FirebaseInstanceId.getInstance().getToken();
+            Log.w("push token: ", pushtoken);
+            content.put("stoken", stoken.getText().toString());
+            //content.put("password", encodedPwd);
             //content.put("password", new String(encodeValue));
             content.put("so", "Android");
-            content.put("tokenPush", "Android");
-            content.put("device", "Tablet Lenovo");
-            content.put("tokenDispositivo", "");
+            content.put("tokenPush", pushtoken);
+            content.put("device", "Device");
+            //content.put("tokenDispositivo", "");
         } catch(Exception e)
         {
             e.printStackTrace();
@@ -202,8 +211,4 @@ public class LoginActivity extends AppCompatActivity {
         }
         return password;
     }
-
-
-
-
 }

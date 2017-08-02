@@ -1,15 +1,41 @@
 package signage.itcrew.com.signagemobile2;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
+
+import java.io.File;
 /*
 * 1 imagen
 * 2 no se
@@ -20,14 +46,116 @@ import android.widget.VideoView;
 public class Campaign extends AppCompatActivity {
     ProgressDialog pDialog;
     VideoView videoView;
+    ImageView imageView;
     TextView banner;
+    private double latitude, longitude;
     private String jsonResponse, jsonmessage;
+    private static final int MY_PERMISSION_REQUEST_LOCATION = 1;
+    private int mShortAnimationDuration, mLongAnimationDuration;
 
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        //getSupportActionBar().hide();
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        View decorView = getWindow().getDecorView();
+        // Hide both the navigation bar and the status bar.
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
         setContentView(R.layout.activity_campaign);
+
+
+        mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+        mLongAnimationDuration = getResources().getInteger(
+                android.R.integer.config_longAnimTime);
+
+
+        //getting location
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission. ACCESS_COARSE_LOCATION)) {
+
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Location")
+                        .setMessage("This application needs permission to use your location")
+                        .setPositiveButton("OK ", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(Campaign.this,
+                                        new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                                        MY_PERMISSION_REQUEST_LOCATION);
+                            }
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission. ACCESS_COARSE_LOCATION}, MY_PERMISSION_REQUEST_LOCATION);
+            }
+        }else {
+            locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            latitude =  location.getLatitude();
+            longitude = location.getLongitude();
+
+            //Log.w("error", "no hay error");
+        }
+        /*if(ContextCompat.checkSelfPermission(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale(Campaign.this, android.Manifest.permission.ACCESS_COARSE_LOCATION)){
+                ActivityCompat.requestPermissions(Campaign.this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSION_REQUEST_LOCATION);
+            }
+            else{
+                LocationManager locationManager = (LocationManager) Campaign.this.getSystemService(Campaign.this.LOCATION_SERVICE);
+                Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                try{
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    Toast.makeText(Campaign.this, "Location not Found", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }*/
+
+        //saving location in shared preferences
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LATITUDE", String.valueOf(latitude)).apply();
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("LONGITUDE", String.valueOf(longitude)).apply();
 
         // Create a progressbar
         pDialog = new ProgressDialog(Campaign.this);
@@ -54,237 +182,107 @@ public class Campaign extends AppCompatActivity {
         videoView.setVideoURI(vidUri);
 
         videoView.start();
-
-        try {
-            // Start the MediaController
-            MediaController mediacontroller = new MediaController(
-                    Campaign.this);
-            mediacontroller.setAnchorView(videoView);
-            // Get the URL from String VideoURL
-            Uri video = Uri.parse(url);
-            videoView.setMediaController(mediacontroller);
-            videoView.setVideoURI(video);
+        int number_of_items = 0;
+        File sdcard  = Environment.getRootDirectory();
 
 
-        } catch (Exception e) {
-            Log.e("Error", e.getMessage());
-            e.printStackTrace();
-        }
+        for(int i = 0; i < number_of_items; i++){
 
-        videoView.requestFocus();
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            // Close the progress bar and play the video
-            public void onPrepared(MediaPlayer mp) {
-                pDialog.dismiss();
-                videoView.start();
-            }
-        });
-    }
-}
-/*
-package com.itcrew.signage;
+            //obtener archivo de memoria interna
+            try {
 
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
-import android.view.Window;
-import android.net.Uri;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
-import android.widget.MediaController;
+                File file = new File(sdcard, String.valueOf(i) + ".mp4");
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+                // Start the MediaController
+                MediaController mediacontroller = new MediaController(
+                        Campaign.this);
+                mediacontroller.setAnchorView(videoView);
+                // Get the URL from String VideoURL
+                Uri video = Uri.parse(url);
+                videoView.setMediaController(mediacontroller);
+                videoView.setVideoPath(video.toString());
 
-import org.json.JSONObject;
+                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        imageView.setVisibility(View.INVISIBLE);
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+                        videoView.animate()
+                                .alpha(0f)
+                                .setDuration(mLongAnimationDuration)
+                                .setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        videoView.setVisibility(View.GONE);
+                                    }
+                                });
 
-public class Campaign extends AppCompatActivity {
-    ProgressDialog pDialog;
-    VideoView videoView;
-    ImageView imageView;
-    TextView textView;
-    private String jsonResponse, jsonMedia, jsonMediaType;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_campaign);
-
-        //Create a progressbar
-        pDialog = new ProgressDialog(Campaign.this);
-
-        //Set progressbar message
-        pDialog.setMessage("Loading...");
-        pDialog.setCancelable(false);
-
-        //Show progressbar
-        pDialog.show();
-
-        //Build videoView
-        videoView = (VideoView) findViewById(R.id.videoView);
-
-        //Build imageView
-        imageView = (ImageView) findViewById(R.id.imageView);
-
-        //Build textView
-        textView = (TextView) findViewById(R.id.textView);
-
-        //Build URL
-        final String url = "http://10.0.2.2:8080/Signage/SignageResources/SignageRest/peticionCampana";
-
-
-        //Build Parameter with JSON body
-        JSONObject content = new JSONObject();
-        try
-        {
-            content.put("campana_id", "1");
-            content.put("request_type", "1");
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        //Convert previous JSON into string
-        final String requestBody = content.toString();
-
-
-        //Send the request with JSON body
-        final JsonObjectRequest jsonrequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try
-                {
-                    //Get response status
-                    jsonResponse = response.getString("status");
-                    jsonMediaType = response.getString("request_type");
-
-                    //If status is ok
-                    if(jsonResponse.compareTo("ok") == 0)
-                    {
-                        // Then get base64 of media.
-                        jsonMedia = response.getString("media");
-
-                        // ThenDecode base64 and send the response file to convert it.
-                        byte[] decodeValue = Base64.decode(jsonMedia.getBytes(), Base64.NO_WRAP);
-                        convertBytesToFile(decodeValue);
-
-                        //If media type is a video
-                        if(jsonMediaType.compareTo("1") == 0) {
-
-                            //Send the converted file to videoView and display it
-                            Uri vidUri = Uri.parse(url);
-                            videoView.setVideoURI(vidUri);
-                            videoView.start();
-
-                            try {
-                                // Start the MediaController
-                                MediaController mediacontroller = new MediaController(Campaign.this);
-                                mediacontroller.setAnchorView(videoView);
-
-                                // Get the URL from String VideoURL
-                                Uri video = Uri.parse(url);
-                                videoView.setMediaController(mediacontroller);
-                                videoView.setVideoURI(video);
-
-                                //////////////////////////////////////////////////////////////////////////////////
-                                // Tendre que cambiar esto para que reciba el archivo convertido y no de una url//
-                                //////////////////////////////////////////////////////////////////////////////////
-                            } catch (Exception e) {
-                                Log.e("Error", e.getMessage());
-                                e.printStackTrace();
-                            }
-
-                            videoView.requestFocus();
-                            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                                // Close the progress bar and play the video
-                                public void onPrepared(MediaPlayer mp) {
-                                    pDialog.dismiss();
-                                    videoView.start();
-                                }
-                            });
-                        }
-
-                        //If media type is an image
-                        else if (jsonMediaType.compareTo("2") == 0)
-                        {
-
-                        }
-
-                        //If media type is text
-                        else if(jsonMediaType.compareTo("3") == 0)
-                        {
-
-                        }
+                        imageView.animate()
+                                .alpha(1f)
+                                .setDuration(mLongAnimationDuration)
+                                .setListener(null);
                     }
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
 
-            }
-        }){
-            //Build the request JSON body
-            @Override
-            public byte[] getBody() {
-                return requestBody.getBytes();
-            }
+                });
+                videoView.requestFocus();
+                videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    // Close the progress bar and play the video
+                    public void onPrepared(MediaPlayer mp) {
+                        pDialog.dismiss();
+                        imageView.setVisibility(View.INVISIBLE);
+                        videoView.start();
+                        mp.setLooping(false);
+                    }
+                });
+            } catch (Exception e) {
 
-            //Build the request header
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String>  params = new HashMap<String, String>();
-                params.put("token-app", "0367F1D1-5463-44DD-8CD2-9E1368E207E8_20170426104639");
-                params.put("api-key", "bcaf75d0a47bad12faa1272e_3ad024c8ab85f8c1fe91b61c");
-                return params;
-            }
+                File file = new File(sdcard, String.valueOf(i) + ".jpg");
 
-            //Specify request content
-            @Override
-            public String getBodyContentType() {
-                return "application/json";
-            }
+                Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
-        };
+                //Hide videoview
+                videoView.setVisibility(View.INVISIBLE);
+
+                imageView = (ImageView) findViewById(R.id.imageView);
+
+                imageView.setImageBitmap(myBitmap); //assign image to imageview
+                imageView.setAlpha(0f);
+                imageView.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
-    private void convertBytesToFile(byte[] bytearray) {
-        try
-        {
-            File outputFile = File.createTempFile("file", "jpeg", getCacheDir());
-            outputFile.deleteOnExit();
-            FileOutputStream fileoutputstream = new FileOutputStream(outputFile);
-            fileoutputstream.write(bytearray);
-            fileoutputstream.close();
-        }
-        catch (IOException ex)
-        {
-            ex.printStackTrace();
+
+    //request permission for location
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+
+        switch (requestCode) {
+            case MY_PERMISSION_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            android.Manifest.permission. ACCESS_COARSE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        //Request location updates:
+                        //locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return;
+            }
+
         }
     }
 }
-*/
