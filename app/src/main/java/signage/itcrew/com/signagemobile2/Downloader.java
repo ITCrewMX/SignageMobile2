@@ -88,7 +88,7 @@ public class Downloader {
                             if(String.valueOf(jsonMedia) == "1") {
                                 try {
                                     if (jsonMedia != null) {
-                                        fos = context.openFileOutput("1.mp4", Context.MODE_PRIVATE);
+                                        fos = context.openFileOutput(i+".mp4", Context.MODE_PRIVATE);
                                         byte[] decodedString = android.util.Base64.decode(String.valueOf(jsonMedia.getJSONObject(i).getJSONArray("media")), android.util.Base64.DEFAULT);
                                         fos.write(decodedString);
                                         fos.flush();
@@ -109,7 +109,7 @@ public class Downloader {
                             {
                                 try {
                                     if (jsonMedia != null) {
-                                        fos = context.openFileOutput("2.jpg", Context.MODE_PRIVATE);
+                                        fos = context.openFileOutput(i+".jpg", Context.MODE_PRIVATE);
                                         byte[] decodedString = android.util.Base64.decode(String.valueOf(jsonMedia.getJSONObject(i).getJSONArray("media")), android.util.Base64.DEFAULT);
                                         fos.write(decodedString);
                                         fos.flush();
