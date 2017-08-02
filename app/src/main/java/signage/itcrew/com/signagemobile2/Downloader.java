@@ -208,7 +208,7 @@ public class Downloader {
     private void convertBytesToFile(byte[] bytearray) {
         try
         {
-            File outputFile = File.createTempFile("file", "jpeg", getCacheDir());
+            File outputFile = File.createTempFile("file", "jpeg",   getCacheDir());
             outputFile.deleteOnExit();
             FileOutputStream fileoutputstream = new FileOutputStream(outputFile);
             fileoutputstream.write(bytearray);
