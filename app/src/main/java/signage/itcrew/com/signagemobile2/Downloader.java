@@ -133,50 +133,6 @@ public class Downloader {
                                 //Add text to shared preferences with "BANNER" tag
                                 PreferenceManager.getDefaultSharedPreferences(context).edit().putString("BANNER", banner).apply();
                             }
-
-                            final String xmlFile = "userData";
-
-                            try {
-                                FileOutputStream fos = new  FileOutputStream("campaign_data.xml");
-                                FileOutputStream fileos= context.openFileOutput(xmlFile, Context.MODE_PRIVATE);
-                                XmlSerializer xmlSerializer = Xml.newSerializer();
-                                StringWriter writer = new StringWriter();
-                                xmlSerializer.setOutput(writer);
-                                xmlSerializer.startDocument("UTF-8", true);
-                                xmlSerializer.startTag(null, "campaign_data");
-                                xmlSerializer.startTag(null, "file_name");
-                                xmlSerializer.text(file_name);
-                                xmlSerializer.endTag(null, "file_name");
-                                xmlSerializer.startTag(null,"file_type");
-                                xmlSerializer.text(file_type);
-                                xmlSerializer.endTag(null, "file_type");
-                                xmlSerializer.startTag(null,"file_path");
-                                xmlSerializer.text(file_path);
-                                xmlSerializer.endTag(null, "file_path");
-                                xmlSerializer.endTag(null, "campaign_data");
-                                xmlSerializer.endDocument();
-                                xmlSerializer.flush();
-                                String dataWrite = writer.toString();
-                                fileos.write(dataWrite.getBytes());
-                                fileos.close();
-                            }
-                            catch (FileNotFoundException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                            catch (IllegalArgumentException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                            catch (IllegalStateException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                            catch (IOException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-
                         }
 
                     }
