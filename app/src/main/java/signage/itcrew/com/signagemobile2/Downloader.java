@@ -41,7 +41,7 @@ public class Downloader {
 
         //Build Parameter with JSON body
         JSONObject content = new JSONObject();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         //Lo que reciben
         try
@@ -76,6 +76,7 @@ public class Downloader {
                         //jsonMedia = response.getString("media");
                         byte[] decodeValue;
                         jsonMedia = response.getJSONArray("media");
+                        prefs.edit().putString("PLAYSIZE", String.valueOf(jsonMedia.length()));
 
                         for(int i=0; i<jsonMedia.length(); i++) {
 
